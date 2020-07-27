@@ -160,6 +160,26 @@ def parse_and_post(Mongo, create_db):
         for team in list_teams:
             Mongo.post_team(team)
 
+def make_final_image(Mongo):
+    real_x = 3000
+    real_y = 1800
+    real_size = 300
+    new_im = Image.new('RGBA', (real_x, real_y))
+
+    def paste(im, i, j):
+        im.thumbnail((real_size, real_size))
+        new_im.paste(im, (i, j))
+        del(im)
+    iterator = Mongo.get_team_iterator()
+    try:
+        for x in range(0, real_x, real_size):
+            for y in range(0, real_y, real_size):
+                paste(Mongo.get_image(iterator.next()['team_name']), x, y)
+    except StopIteration:
+        pass
+    new_im.save('final.png')
+    #new_im.show()
+
 if __name__ == "__main__":
     Mongo = MongoHandler(
         db_name='futbol_db',
@@ -174,27 +194,8 @@ if __name__ == "__main__":
     # print(Mongo.list_teams())  # displays a list of teams
     # wigan_img = Mongo.get_image('Wigan')  # returns image plot for team
 
-    real_x = 3000
-    real_y = 1800
-    real_size = 300
-    new_im = Image.new('RGBA', (real_x, real_y))
-
-    def paste(im, i, j):
-        im.thumbnail((real_size, real_size))
-        new_im.paste(im, (i, j))
-        del(im)
-    iterator = Mongo.get_team_iterator()
-    num = 0
-    try:
-        for x in range(0, real_x, real_size):
-            for y in range(0, real_y, real_size):
-                num += 1
-                paste(Mongo.get_image(iterator.next()['team_name']), x, y)
-    except StopIteration:
-        pass
-    print(num)
-    new_im.save('final.png')
-    new_im.show()
+    make_final_image()
+    
     
 
     
