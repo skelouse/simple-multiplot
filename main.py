@@ -152,7 +152,6 @@ class SQLHandler():
         return img.tobytes(), img.size
 
 
-
 def parse_and_post(Mongo, create_db):
     if create_db:
         sql = SQLHandler('database.sqlite')
@@ -194,7 +193,7 @@ if __name__ == "__main__":
     # print(Mongo.list_teams())  # displays a list of teams
     # wigan_img = Mongo.get_image('Wigan')  # returns image plot for team
 
-    make_final_image()
+    make_final_image(Mongo)
     
     
 
